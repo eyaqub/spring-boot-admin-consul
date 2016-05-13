@@ -1,103 +1,88 @@
-spring-boot-admin
-=================
-[![Apache License 2](https://img.shields.io/badge/license-ASF2-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0.txt)
-[![Build Status](https://travis-ci.org/codecentric/spring-boot-admin.svg?branch=master)](https://travis-ci.org/codecentric/spring-boot-admin)
-[![Coverage Status](https://coveralls.io/repos/codecentric/spring-boot-admin/badge.svg)](https://coveralls.io/r/codecentric/spring-boot-admin)
-[![Codacy Badge](https://api.codacy.com/project/badge/grade/8fd7bac6edac417a8451387286fe6917)](https://www.codacy.com/app/joshiste/spring-boot-admin)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.codecentric/spring-boot-admin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.codecentric/spring-boot-admin/)
-[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/codecentric/spring-boot-admin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+To build the project:
 
-This is a simple admin interface for [Spring Boot](http://projects.spring.io/spring-boot/ "Official Spring-Boot website") applications.
+$ ./gradlew clean build
 
-This application provides a simple GUI to administrate Spring Boot applications in some ways. At the moment it provides the following features for every registered application.
+$ java -jar build/libs/my-spring-boot-admin-0.0.1.jar
 
-* Show name/id and version number
-* Show health status
-* Download main logfile
-* Show details, like
- * JVM & memory metrics
- * Counter & gauge metrics
- * Datasource metrics
- * Cache metrics
-* View Java, system- & environment-properties
-* Support for Spring Clouds postable /env- &/refresh-endpoint
-* Easy loglevel management (for Logback only)
-* Interact with JMX-beans
-* View threaddump
-* View traces
-* Mail and desktop notification on status change
-* Event journal of status changes (non persistent)
+It should start the project in Spring's embedded Tomcat. 
+Test the simple webservices that should be working on these paths:
 
-## Getting Started
+1) The following prints the project environment (using Spring @Autowired Evironment class)
+http://localhost:8080/env
 
-[A quick guide](http://codecentric.github.io/spring-boot-admin/1.3.2/#getting-started) to get started can be found in our docs.
+2) The following shows a greeting message
+http://localhost:8080/greeting
 
-## Reference Guide
+3) The following shows the default page of Spring Boot Admin Server
 
-[Version 1.3.2](http://codecentric.github.io/spring-boot-admin/1.3.2/)
+http://localhost:8080/#/overview
 
-[Version 1.3.0](http://codecentric.github.io/spring-boot-admin/1.3.0/)
+TODO:
 
-## Screenshots
+The idea is to connect it now with Consul running locally in a Docker container at:
 
-### Dashboard
+192.168.99.100:8500
 
-[](url "title")
-<img src="https://raw.githubusercontent.com/codecentric/spring-boot-admin/master/screenshot.png">
 
-### Details
+Problem: As soon as @@EnableAdminServer annotation is used in SpringBootAdminApplication class, comes exceptions:
 
-[](url "title")
-<img src="https://raw.githubusercontent.com/codecentric/spring-boot-admin/master/screenshot-details.png">
 
-### Environment
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::        (v1.3.3.RELEASE)
 
-[](url "title")
-<img src="https://raw.githubusercontent.com/codecentric/spring-boot-admin/master/screenshot-environment.png">
+2016-05-13 09:34:18.350  INFO 11956 --- [           main] hello.SpringBootAdminApplication         : Starting SpringBootAdminApplication on Edwins-MacBook-Pro.local with PID 11956 (/Users/EY/Data/RM/Spring/bin started by EY in /Users/EY/Data/RM/Spring)
+2016-05-13 09:34:18.355  INFO 11956 --- [           main] hello.SpringBootAdminApplication         : No active profile set, falling back to default profiles: default
+2016-05-13 09:34:18.430  INFO 11956 --- [           main] ationConfigEmbeddedWebApplicationContext : Refreshing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@4df50bcc: startup date [Fri May 13 09:34:18 CEST 2016]; root of context hierarchy
+2016-05-13 09:34:18.581  WARN 11956 --- [           main] ationConfigEmbeddedWebApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanDefinitionStoreException: Failed to process import candidates for configuration class [de.codecentric.boot.admin.config.AdminServerWebConfiguration]; nested exception is java.lang.IllegalStateException: Failed to introspect annotated methods on class de.codecentric.boot.admin.config.RevereseZuulProxyConfiguration
+2016-05-13 09:34:18.591 ERROR 11956 --- [           main] o.s.boot.SpringApplication               : Application startup failed
 
-### Logging
+org.springframework.beans.factory.BeanDefinitionStoreException: Failed to process import candidates for configuration class [de.codecentric.boot.admin.config.AdminServerWebConfiguration]; nested exception is java.lang.IllegalStateException: Failed to introspect annotated methods on class de.codecentric.boot.admin.config.RevereseZuulProxyConfiguration
+	at org.springframework.context.annotation.ConfigurationClassParser.processImports(ConfigurationClassParser.java:519) ~[spring-context-4.2.5.RELEASE.jar:4.2.5.RELEASE]
+	at org.springframework.context.annotation.ConfigurationClassParser.doProcessConfigurationClass(ConfigurationClassParser.java:278) ~[spring-context-4.2.5.RELEASE.jar:4.2.5.RELEASE]
+	at org.springframework.context.annotation.ConfigurationClassParser.processConfigurationClass(ConfigurationClassParser.java:232) ~[spring-context-4.2.5.RELEASE.jar:4.2.5.RELEASE]
+	at org.springframework.context.annotation.ConfigurationClassParser.processImports(ConfigurationClassParser.java:510) ~[spring-context-4.2.5.RELEASE.jar:4.2.5.RELEASE]
+	at org.springframework.context.annotation.ConfigurationClassParser.doProcessConfigurationClass(ConfigurationClassParser.java:278) ~[spring-context-4.2.5.RELEASE.jar:4.2.5.RELEASE]
+	at org.springframework.context.annotation.ConfigurationClassParser.processConfigurationClass(ConfigurationClassParser.java:232) ~[spring-context-4.2.5.RELEASE.jar:4.2.5.RELEASE]
+	at org.springframework.context.annotation.ConfigurationClassParser.parse(ConfigurationClassParser.java:199) ~[spring-context-4.2.5.RELEASE.jar:4.2.5.RELEASE]
+	at org.springframework.context.annotation.ConfigurationClassParser.parse(ConfigurationClassParser.java:168) ~[spring-context-4.2.5.RELEASE.jar:4.2.5.RELEASE]
+	at org.springframework.context.annotation.ConfigurationClassPostProcessor.processConfigBeanDefinitions(ConfigurationClassPostProcessor.java:321) ~[spring-context-4.2.5.RELEASE.jar:4.2.5.RELEASE]
+	at org.springframework.context.annotation.ConfigurationClassPostProcessor.postProcessBeanDefinitionRegistry(ConfigurationClassPostProcessor.java:243) ~[spring-context-4.2.5.RELEASE.jar:4.2.5.RELEASE]
+	at org.springframework.context.support.PostProcessorRegistrationDelegate.invokeBeanDefinitionRegistryPostProcessors(PostProcessorRegistrationDelegate.java:273) ~[spring-context-4.2.5.RELEASE.jar:4.2.5.RELEASE]
+	at org.springframework.context.support.PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(PostProcessorRegistrationDelegate.java:98) ~[spring-context-4.2.5.RELEASE.jar:4.2.5.RELEASE]
+	at org.springframework.context.support.AbstractApplicationContext.invokeBeanFactoryPostProcessors(AbstractApplicationContext.java:678) ~[spring-context-4.2.5.RELEASE.jar:4.2.5.RELEASE]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:520) ~[spring-context-4.2.5.RELEASE.jar:4.2.5.RELEASE]
+	at org.springframework.boot.context.embedded.EmbeddedWebApplicationContext.refresh(EmbeddedWebApplicationContext.java:118) ~[spring-boot-1.3.3.RELEASE.jar:1.3.3.RELEASE]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:766) [spring-boot-1.3.3.RELEASE.jar:1.3.3.RELEASE]
+	at org.springframework.boot.SpringApplication.createAndRefreshContext(SpringApplication.java:361) [spring-boot-1.3.3.RELEASE.jar:1.3.3.RELEASE]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:307) [spring-boot-1.3.3.RELEASE.jar:1.3.3.RELEASE]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1191) [spring-boot-1.3.3.RELEASE.jar:1.3.3.RELEASE]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1180) [spring-boot-1.3.3.RELEASE.jar:1.3.3.RELEASE]
+	at hello.SpringBootAdminApplication.main(SpringBootAdminApplication.java:26) [bin/:na]
+Caused by: java.lang.IllegalStateException: Failed to introspect annotated methods on class de.codecentric.boot.admin.config.RevereseZuulProxyConfiguration
+	at org.springframework.core.type.StandardAnnotationMetadata.getAnnotatedMethods(StandardAnnotationMetadata.java:163) ~[spring-core-4.2.5.RELEASE.jar:4.2.5.RELEASE]
+	at org.springframework.context.annotation.ConfigurationClassParser.doProcessConfigurationClass(ConfigurationClassParser.java:292) ~[spring-context-4.2.5.RELEASE.jar:4.2.5.RELEASE]
+	at org.springframework.context.annotation.ConfigurationClassParser.processConfigurationClass(ConfigurationClassParser.java:232) ~[spring-context-4.2.5.RELEASE.jar:4.2.5.RELEASE]
+	at org.springframework.context.annotation.ConfigurationClassParser.processImports(ConfigurationClassParser.java:510) ~[spring-context-4.2.5.RELEASE.jar:4.2.5.RELEASE]
+	... 20 common frames omitted
+Caused by: java.lang.NoClassDefFoundError: org/springframework/cloud/netflix/zuul/filters/ProxyRouteLocator
+	at java.lang.Class.getDeclaredMethods0(Native Method) ~[na:1.8.0_66]
+	at java.lang.Class.privateGetDeclaredMethods(Class.java:2701) ~[na:1.8.0_66]
+	at java.lang.Class.getDeclaredMethods(Class.java:1975) ~[na:1.8.0_66]
+	at org.springframework.core.type.StandardAnnotationMetadata.getAnnotatedMethods(StandardAnnotationMetadata.java:152) ~[spring-core-4.2.5.RELEASE.jar:4.2.5.RELEASE]
+	... 23 common frames omitted
+Caused by: java.lang.ClassNotFoundException: org.springframework.cloud.netflix.zuul.filters.ProxyRouteLocator
+	at java.net.URLClassLoader.findClass(URLClassLoader.java:381) ~[na:1.8.0_66]
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:424) ~[na:1.8.0_66]
+	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:331) ~[na:1.8.0_66]
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:357) ~[na:1.8.0_66]
+	... 27 common frames omitted
 
-[](url "title")
-<img src="https://raw.githubusercontent.com/codecentric/spring-boot-admin/master/screenshot-logging.png">
+2016-05-13 09:34:18.594  INFO 11956 --- [           main] .b.l.ClasspathLoggingApplicationListener : Application failed to start with classpath: [file:/Users/EY/Data/RM/Spring/bin/, file:/Users/EY/.gradle/caches/modules-2/files-2.1/ch.qos.logback/logback-classic/1.1.5/92353eb144695bba80b31f7bec4f36d871f230ac/logback-classic-1.1.5.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/ch.qos.logback/logback-core/1.1.5/16722afde74444716e299bee1f60aec9f6d1f0dc/logback-core-1.1.5.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.6.5/65137ebf85056473b40c311f889601646a7612ba/jackson-annotations-2.6.5.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.6.5/334369d7eff497f358b248c171dac0dd62c68f67/jackson-core-2.6.5.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-databind/2.6.5/d50be1723a09befd903887099ff2014ea9020333/jackson-databind-2.6.5.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/com.google.code.findbugs/jsr305/3.0.1/f7be08ec23c21485b9b5a1cf1654c2ec8c58168d/jsr305-3.0.1.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/18.0/cce0823396aa693798f8882e64213b1772032b09/guava-18.0.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/com.googlecode.json-simple/json-simple/1.1.1/c9ad4a0850ab676c5c64461a05ca524cdfff59f1/json-simple-1.1.1.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/com.netflix.archaius/archaius-core/0.7.4/d6b5e5c541452248fd8565ccd0732623c81a30b5/archaius-core-0.7.4.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/com.netflix.netflix-commons/netflix-commons-util/0.1.1/39e67061780476f207b31465baaed84a91ff659f/netflix-commons-util-0.1.1.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/com.netflix.servo/servo-core/0.10.1/7461ed61647f9996c88ad822546ffc7851a45e0e/servo-core-0.10.1.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/com.netflix.servo/servo-internal/0.10.1/bb6f9cd7b309189bad01b93a806ba9d6cb5d915a/servo-internal-0.10.1.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/com.netflix.zuul/zuul-core/1.1.0/3b863d43ccc5fd84890418bc61f6cccdb53569e5/zuul-core-1.1.0.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/com.sun.mail/javax.mail/1.5.5/ffcd34b5de820f35bcc9303649cf6ab2c65ad44e/javax.mail-1.5.5.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/commons-codec/commons-codec/1.9/9ce04e34240f674bc72680f8b843b1457383161a/commons-codec-1.9.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/commons-configuration/commons-configuration/1.8/6cce40435bcd8018018f16898de01976b319941a/commons-configuration-1.8.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/commons-io/commons-io/2.4/b1b6ea3b7e4aa4f492509a4952029cd8e48019ad/commons-io-2.4.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/commons-lang/commons-lang/2.6/ce1edb914c94ebc388f086c6827e8bdeec71ac2/commons-lang-2.6.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/de.codecentric/spring-boot-admin-server-ui/1.2.4/cce4a519688fc918c78c6afa39cfbcb020e720c0/spring-boot-admin-server-ui-1.2.4.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/de.codecentric/spring-boot-admin-server/1.2.4/6225156a1030703274ae1aef0934b6540b005526/spring-boot-admin-server-1.2.4.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/de.codecentric/spring-boot-admin-starter-client/1.2.4/773e96d89d8d44b8dc95d615ea3af03f7c76bc5b/spring-boot-admin-starter-client-1.2.4.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/javax.activation/activation/1.1/e6cb541461c2834bdea3eb920f1884d1eb508b50/activation-1.1.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/joda-time/joda-time/2.2/a5f29a7acaddea3f4af307e8cf2d0cc82645fd7d/joda-time-2.2.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/junit/junit/4.12/2973d150c0dc1fefe998f834810d68f278ea58ec/junit-4.12.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpclient/4.5/a1e6cbb3cc2c5f210dd1310ff9fcb2c09c0d1438/httpclient-4.5.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpcore/4.4.1/f5aa318bda4c6c8d688c9d00b90681dcd82ce636/httpcore-4.4.1.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/org.apache.tomcat.embed/tomcat-embed-core/8.0.32/734ead0c803525cc9c7f283438101734ca9aac01/tomcat-embed-core-8.0.32.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/org.apache.tomcat.embed/tomcat-embed-el/8.0.32/82adf8bd959fc046d55490e6f2ce67297c91d62b/tomcat-embed-el-8.0.32.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/org.apache.tomcat.embed/tomcat-embed-logging-juli/8.0.32/5e664b357710a6c43cad2191404c2a9d0b82cdb3/tomcat-embed-logging-juli-8.0.32.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/org.apache.tomcat.embed/tomcat-embed-websocket/8.0.32/237ca58dac66f438579750169e6cb297ac041c9d/tomcat-embed-websocket-8.0.32.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/org.hamcrest/hamcrest-core/1.3/42a25dc3219429f0e5d060061f71acb49bf010a0/hamcrest-core-1.3.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/org.jolokia/jolokia-core/1.3.3/1259e53aab223899db38cda8d14cd8f337f6e945/jolokia-core-1.3.3.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/org.slf4j/jcl-over-slf4j/1.7.16/34e48073884704ac987d3d1a1ab9b60e62028a9/jcl-over-slf4j-1.7.16.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/org.slf4j/jul-to-slf4j/1.7.16/2d5b546c5557dcbf08c3a381d7dc9bd275a602c1/jul-to-slf4j-1.7.16.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/org.slf4j/log4j-over-slf4j/1.7.16/c5922f37c8a5e4377cfb543c549f10e73d72ede0/log4j-over-slf4j-1.7.16.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.16/3a6274f658487d5bfff9af3862beff6da1e7fd52/slf4j-api-1.7.16.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-actuator/1.3.3.RELEASE/7f1ae26c1ea42fb9dd5f14925cd605198f8b644/spring-boot-actuator-1.3.3.RELEASE.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-autoconfigure/1.3.3.RELEASE/e7a4a25f74dac6b335ffabc43e3e8a6e3066340e/spring-boot-autoconfigure-1.3.3.RELEASE.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-starter-actuator/1.3.3.RELEASE/ec15d8ba682e5e287a6d8cb1299ca69214a46530/spring-boot-starter-actuator-1.3.3.RELEASE.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-starter-logging/1.3.3.RELEASE/16b395c84f28b947f1c336aa461fda1e662bb3b6/spring-boot-starter-logging-1.3.3.RELEASE.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-starter-mail/1.3.3.RELEASE/29a5b12e598327b0e122f82609f912d371b69f87/spring-boot-starter-mail-1.3.3.RELEASE.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-starter-tomcat/1.3.3.RELEASE/541468d85cc2c94d2b538b0fa07c018847bb9b78/spring-boot-starter-tomcat-1.3.3.RELEASE.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-starter-validation/1.3.3.RELEASE/df2d5a437fa3093b8da99216c355189fe7b5e64/spring-boot-starter-validation-1.3.3.RELEASE.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-starter-web/1.3.3.RELEASE/f1ee2657f50844d8682b30a1f40aebff3ad60cce/spring-boot-starter-web-1.3.3.RELEASE.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-starter/1.3.3.RELEASE/e4a71ce6ae8e42a7535dd9f1a39f91d36c538f28/spring-boot-starter-1.3.3.RELEASE.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot/1.3.3.RELEASE/641cc375499d444e4efbc1801902260daa79758d/spring-boot-1.3.3.RELEASE.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/org.springframework.cloud/spring-cloud-commons/1.1.0.RELEASE/793f45045a5bddae412a35b5d617c2237ee0b845/spring-cloud-commons-1.1.0.RELEASE.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/org.springframework.cloud/spring-cloud-netflix-core/1.1.0.RELEASE/ae448b90ce024c2b4cb66f2cab8c749ec06cc902/spring-cloud-netflix-core-1.1.0.RELEASE.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/org.springframework.security/spring-security-crypto/4.0.3.RELEASE/46802f89ed4b7894b527058aeaeeab7fba53276a/spring-security-crypto-4.0.3.RELEASE.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/org.springframework/spring-aop/4.2.5.RELEASE/858d6c70909b3ce7e07b59fc936f8ccfcd81c0aa/spring-aop-4.2.5.RELEASE.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/org.springframework/spring-beans/4.2.5.RELEASE/fa992ae40f6fc47117282164e0433b71da385e94/spring-beans-4.2.5.RELEASE.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/org.springframework/spring-context-support/4.2.5.RELEASE/72db9c52e8bd2dc3290cd51114583731f818356b/spring-context-support-4.2.5.RELEASE.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/org.springframework/spring-context/4.2.5.RELEASE/a75e18322c7b362fe1daa26a245ae672ec0f3138/spring-context-4.2.5.RELEASE.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/org.springframework/spring-core/4.2.5.RELEASE/251207b29f0f38f61e3495a2f7fb053cf1bfe8c/spring-core-4.2.5.RELEASE.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/org.springframework/spring-expression/4.2.5.RELEASE/a42bdfb833d0be6c18429aea3fb0fba81f85c6e8/spring-expression-4.2.5.RELEASE.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/org.springframework/spring-web/4.2.5.RELEASE/49cd2430884b77172aa81e3fc33ef668ea1dab30/spring-web-4.2.5.RELEASE.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/org.springframework/spring-webmvc/4.2.5.RELEASE/cf463cce3e4453eb4b9a69de2dcdfd60c3c57e0/spring-webmvc-4.2.5.RELEASE.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/org.webjars/angularjs/1.2.12/4871895a75b19fc4a64c2b994079ec8f6f7f3dc9/angularjs-1.2.12.jar, file:/Users/EY/.gradle/caches/modules-2/files-2.1/org.webjars/jquery/1.11.0/c47eef26208f9672dc34d2f000ece85f427bd1b1/jquery-1.11.0.jar, file:/Users/EY/.m2/repository/aopalliance/aopalliance/1.0/aopalliance-1.0.jar, file:/Users/EY/.m2/repository/com/fasterxml/classmate/1.1.0/classmate-1.1.0.jar, file:/Users/EY/.m2/repository/javax/validation/validation-api/1.1.0.Final/validation-api-1.1.0.Final.jar, file:/Users/EY/.m2/repository/org/hibernate/hibernate-validator/5.2.4.Final/hibernate-validator-5.2.4.Final.jar, file:/Users/EY/.m2/repository/org/jboss/logging/jboss-logging/3.3.0.Final/jboss-logging-3.3.0.Final.jar, file:/Users/EY/.m2/repository/org/yaml/snakeyaml/1.16/snakeyaml-1.16.jar]
 
-### JMX
 
-[](url "title")
-<img src="https://raw.githubusercontent.com/codecentric/spring-boot-admin/master/screenshot-jmx.png">
 
-### Threads
-
-[](url "title")
-<img src="https://raw.githubusercontent.com/codecentric/spring-boot-admin/master/screenshot-threads.png">
-
-### Trace
-
-[](url "title")
-<img src="https://raw.githubusercontent.com/codecentric/spring-boot-admin/master/screenshot-trace.png">
-
-### Journal
-
-[](url "title")
-<img src="https://raw.githubusercontent.com/codecentric/spring-boot-admin/master/screenshot-journal.png">
-
-## Snapshot builds
-You can access snapshot builds from the sonatype repository:
-```xml
-<snapshotRepository>
- <id>sonatype-nexus-snapshots</id>
- <name>Sonatype Nexus Snapshots</name>
- <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-</snapshotRepository>
-```
-
-## Build
-In order to build spring-boot-admin you need to have node.js and npm on your `PATH`.
-
-```shell
-mvn clean package
-```
-
-## Set version for next release
-```shell
-mvn versions:set versions:commit -DnewVersion=1.0.0-SNAPSHOT
-```
